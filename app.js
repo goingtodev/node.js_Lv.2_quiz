@@ -2,6 +2,7 @@ import express from 'express';
 import database from './model/database.js';
 import authRoute from './routes/auth.js';
 import postRoute from './routes/posts.js';
+import commentRoute from './routes/comments.js';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -13,6 +14,7 @@ app.use(cookieParser());
 
 app.use('/', authRoute);
 app.use('/posts', postRoute);
+app.use('/posts/:postId', commentRoute);
 
 const { PORT } = process.env;
 
