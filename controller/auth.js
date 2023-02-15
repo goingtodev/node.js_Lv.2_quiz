@@ -46,7 +46,7 @@ export async function login(req, res) {
   if (!isValidPassword) {
     return res.status(412).json({ errorMessage: '패스워드를 확인해주세요.' });
   }
-  const crtoken = createJwtToken(user.userId);
+  const crtoken = createJwtToken(user.userId, user.nickname);
   const slicetoken1 = crtoken.slice(0, 10);
   const slicetoken2 = crtoken
     .slice(10, 20)
@@ -57,6 +57,6 @@ export async function login(req, res) {
 }
 
 const secretKey = process.env.SECRETKEY;
-function createJwtToken(userId) {
-  return jwt.sign({ userId }, secretKey);
+function createJwtToken(userId, nickname) {
+  return jwt.sign({ userId, nickname }, secretKey);
 }

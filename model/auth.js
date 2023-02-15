@@ -39,3 +39,7 @@ export async function createUser(user) {
 export async function findByUsername(nickname) {
   return User.findOne({ nickname });
 }
+
+export async function findById(userId) {
+  return User.find({ userId });
+}
