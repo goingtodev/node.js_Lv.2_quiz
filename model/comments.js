@@ -41,9 +41,9 @@ export async function getAll() {
   return Comment.find().sort({ createdAt: -1 });
 }
 
-// export async function getById(commentId) {
-//   return Comment.find({ commentId });
-// }
+export async function getById(commentId) {
+  return Comment.find({ commentId });
+}
 
 export async function create(comment, userId, nickname) {
   return User.findById(userId).then(() => {
