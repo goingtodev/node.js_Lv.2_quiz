@@ -1,4 +1,7 @@
 import * as authRepository from '../model/auth.js';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export async function signup(req, res) {
   const { nickname, password, confirm } = req.body;
@@ -29,4 +32,31 @@ export async function signup(req, res) {
     password,
   });
   res.status(201).json({ message: '회원 가입에 성공했습니다.' });
+}
+
+export async function login(req, res) {
+  const { nickname, password } = req.body;
+  const user = await authRepository.findByUsername(nickname);
+
+  if (!user) {
+    return res.status(412).json({ errorMessage: '패스워드를 확인해주세요.' });
+  }
+  const isValidPassword = await user.password.includes(password);
+
+  if (!isValidPassword) {
+    return res.status(412).json({ errorMessage: '패스워드를 확인해주세요.' });
+  }
+  const crtoken = createJwtToken(user.userId);
+  const slicetoken1 = crtoken.slice(0, 10);
+  const slicetoken2 = crtoken
+    .slice(10, 20)
+    .replace(/^[a-z0-9_]{4,20}$/gi, '**********');
+  const token = slicetoken1 + slicetoken2;
+  res.cookie('Authorization', `Bearer ${crtoken}`);
+  res.json({ token: token });
+}
+
+const secretKey = process.env.SECRETKEY;
+function createJwtToken(userId) {
+  return jwt.sign({ userId }, secretKey);
 }
